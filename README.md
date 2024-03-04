@@ -7,7 +7,7 @@ An endpoint in the context of a server typically refers to a specific URL or URI
 
 ## CONTROLLERS
 
-Les controllers, vont comme leur nom l'indique, contrôler tout le processus d'exécution des taches (services) liées à une route.
+Les controllers, vont comme leur nom l'indique, contrôler tout le processus d'exécution des taches (services) liées à une route. Renvoie les reponses (res).
 
 ## MIDDLEWARES
 
