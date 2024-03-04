@@ -77,10 +77,8 @@ router.patch("/addMeteo", (req, res) => {
         meteo: "New Meteo saved in DDB",
       });} 
       return res.json({result: false, meteo: "Already added"})
- 
     });
   });
 });
-
 
 module.exports = router;
