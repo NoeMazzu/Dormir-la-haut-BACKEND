@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const checklistTemplateSchema = mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
-  item:[String]
+  item: { type: [String], required: true },
 });
 
 const ChecklistTemplate = mongoose.model(
