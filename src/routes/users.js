@@ -82,5 +82,70 @@ router.patch("/addMeteo", (req, res) => {
   });
 });
 
+//DELETE NEW METEO
+router.patch("/removeMeteo", (req, res) => {
+  User.findOne({ token: req.body.token }).then((data) => {
+    if (!data) return res.json({ result: false, error: "User does not exist" });
+
+    User.updateOne(
+      { token: data.token },
+      { $pull: { fav_meteo : req.body.newMeteo } }
+    ).then((updateResult) => {
+      console.log(updateResult);
+      if (updateResult.modifiedCount) {
+        return res.json({
+          result: true,
+          meteo: "Selected Meteo removed successfully",
+        });
+      }
+      return res.json({ result: false, meteo: "Meteo not found" });
+    });
+  });
+});
+
+
+//Mettre de côté [Ajouter]
+
+router.patch("/addAside", (req, res) => {
+  User.findOne({ token: req.body.token }).then((data) => {
+    if (!data) return res.json({ result: false, error: "User do not exist" });
+      
+    User.updateOne(
+      { token: data.token },
+      { $addToSet: { fav_POI: req.body.id }}
+    ).then((data) => {
+      console.log(data);
+      if (data.modifiedCount) {
+        return res.json({
+          result: true,
+          meteo: "New Fav added",
+        });
+      }
+      return res.json({ result: false, meteo: "Already added" });
+    });
+  });
+});
+//Mettre de côté [Delete]
+router.patch("/removeAside", (req, res) => {
+  User.findOne({ token: req.body.token }).then((data) => {
+    if (!data) return res.json({ result: false, error: "User does not exist" });
+
+    User.updateOne(
+      { token: data.token },
+      { $pull: { fav_POI: req.body.id } }
+    ).then((updateResult) => {
+      console.log(updateResult);
+      if (updateResult.modifiedCount) {
+        return res.json({
+          result: true,
+          meteo: "Fav removed successfully",
+        });
+      }
+      return res.json({ result: false, meteo: "Fav not found" });
+    });
+  });
+});
+
+
 
 module.exports = router;
