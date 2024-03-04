@@ -4,35 +4,64 @@ const User = require("../models/users");
 const { checkBody } = require("../middlewares/checkBody");
 const uid2 = require("uid2");
 const bcrypt = require("bcrypt");
-/* GET users listing. */
+
+
+//ROUTE SIGN UP 
 router.post("/signup", (req, res) => {
-  if (!checkBody(req.body, ["email", "password"])) {
+  if (!checkBody(req.body, ['userName', 'lastName', 'firstName', 'mail', 'password'])) {
     res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
 
-  // Check if the user has not already been registered
-  User.findOne(
-    { email: req.body.email } || { username: req.body.username }
-  ).then((data) => {
-    if (data === null) {
+  // Vérifier l'existence du nom d'utilisateur
+  User.findOne({ userName: req.body.userName }).then((usernameData) => {
+    if (usernameData !== null) {
+      res.json({ result: false, error: "Username already exists" });
+      return;
+    }
+
+    // Vérifier l'existence de l'adresse e-mail
+    User.findOne({ mail: req.body.mail }).then((emailData) => {
+      if (emailData !== null) {
+        res.json({ result: false, error: "Email already exists" });
+        return;
+      }
+
+      // Si le nom d'utilisateur et l'adresse e-mail n'existent pas, enregistrez le nouvel utilisateur
       const hash = bcrypt.hashSync(req.body.password, 10);
 
       const newUser = new User({
-        username: req.body.username,
+        userName: req.body.userName,
+        lastName: req.body.lastName,
+        firstName: req.body.firstName,
+        mail: req.body.mail,
         password: hash,
         token: uid2(32),
-        canBookmark: true,
       });
 
       newUser.save().then((newDoc) => {
         res.json({ result: true, token: newDoc.token });
       });
-    } else {
-      // User already exists in database
-      res.json({ result: false, error: "User already exists" });
-    }
+    });
   });
 });
+
+//ROUTE SIGN IN
+
+router.post('/signin', (req, res) => {
+  if (!checkBody(req.body, ['mail', 'password'])) {
+    res.json({ result: false, error: "Missing or empty fields" });
+    return;
+  }
+  User.findOne({mail: req.body.mail}).then(data => {
+    if(data && bcrypt.compareSync(req.body.password, data.password)){
+      res.json({result: true, token: data.token})
+    } else {
+      res.json({result: false, error: 'Invalid email adress or password'})
+    }
+  })
+})
+
+
 
 module.exports = router;
