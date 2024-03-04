@@ -66,6 +66,6 @@ const poiSchema = Schema({
   },
 });
 
-const Poi = mongoose.model("pois", poiSchema);
+const Poi = model("pois", poiSchema);
 
 module.exports = Poi;
