@@ -1,5 +1,4 @@
 var express = require("express");
-var express = require("express");
 var router = express.Router();
 const User = require("../models/users");
 const { checkBody } = require("../middlewares/checkBody");
@@ -77,6 +76,7 @@ router.patch("/addMeteo", (req, res) => {
         meteo: "New Meteo saved in DDB",
       });} 
       return res.json({result: false, meteo: "Already added"})
+ 
     });
   });
 });
