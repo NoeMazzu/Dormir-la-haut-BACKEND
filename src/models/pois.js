@@ -1,6 +1,30 @@
-const mongoose = require("mongoose");
+const {
+  Schema,
+  model,
+  Types: { ObjectId },
+} = require("mongoose");
 
-const poiSchema = mongoose.Schema({
+const validator = require("validator");
+
+const photos = new Schema({
+  url: {
+    type: String,
+    required: true,
+    validate(value) {
+      if (!validator.isURL(value)) {
+        throw new Error("Invalid URL");
+      }
+    },
+  },
+  liked: [
+    {
+      type: ObjectId,
+      ref: "users",
+    },
+  ],
+});
+
+const poiSchema = Schema({
   name: {
     type: String,
     required: true,
@@ -23,13 +47,13 @@ const poiSchema = mongoose.Schema({
   },
   favorite: [
     {
-      type: Schema.Types.ObjectId,
+      type: ObjectId,
       ref: "users",
     },
   ],
   photos: [photos],
   createdBy: {
-    type: Schema.Types.ObjectId,
+    type: ObjectId,
     ref: "users",
   },
   type: {
@@ -40,24 +64,6 @@ const poiSchema = mongoose.Schema({
     type: Boolean,
     required: true,
   },
-});
-
-const photos = new Schema({
-  url: {
-    type: String,
-    required: true,
-    validate(value) {
-      if (!validator.isURL(value)) {
-        throw new Error("Invalid URL");
-      }
-    },
-  },
-  liked: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "users",
-    },
-  ],
 });
 
 const Poi = mongoose.model("pois", poiSchema);
