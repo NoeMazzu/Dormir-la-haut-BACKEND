@@ -8,6 +8,7 @@ var logger = require("morgan");
 
 var indexRouter = require("./src/routes/index");
 var usersRouter = require("./src/routes/users");
+var poiRouter = require("./src/routes/poi.route");
 
 var app = express();
 
@@ -18,6 +19,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
+app.use("/poi", poiRouter);
 app.use("/users", usersRouter);
 
 module.exports = app;
