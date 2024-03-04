@@ -1,7 +1,30 @@
-const mongoose = require("mongoose");
+const {
+  Schema,
+  model,
+  Types: { ObjectId },
+} = require("mongoose");
 const validator = require("validator");
 
-const userSchema = mongoose.Schema({
+const task = new Schema({
+  itemName: {
+    type: String,
+    required: true,
+  },
+  complete: {
+    type: Boolean,
+  },
+});
+
+const checklist_user = new Schema({
+  title: {
+    type: String,
+    required: true,
+    maxLength: 20,
+  },
+  tasks: [task],
+});
+
+const userSchema = new Schema({
   firstName: {
     type: String,
     required: true,
@@ -61,7 +84,7 @@ const userSchema = mongoose.Schema({
   },
   fav_POI: [
     {
-      type: mongoose.Schema.Types.ObjectId,
+      type: ObjectId,
       ref: "POIS",
     },
   ],
@@ -88,25 +111,6 @@ const userSchema = mongoose.Schema({
   },
 });
 
-const checklist_user = new Schema({
-  title: {
-    type: String,
-    required: true,
-    maxLength: 20,
-  },
-  tasks: [task],
-});
-
-const task = new Schema({
-  itemName: {
-    type: String,
-    required: true,
-  },
-  complete: {
-    type: Boolean,
-  },
-});
-
-const User = mongoose.model("users", userSchema);
+const User = model("users", userSchema);
 
 module.exports = User;
