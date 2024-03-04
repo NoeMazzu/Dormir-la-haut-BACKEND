@@ -61,7 +61,7 @@ const userSchema = mongoose.Schema({
   },
   fav_POI: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "POIS",
     },
   ],
