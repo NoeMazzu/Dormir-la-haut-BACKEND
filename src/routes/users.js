@@ -6,10 +6,17 @@ const { checkBody } = require("../middlewares/checkBody");
 const uid2 = require("uid2");
 const bcrypt = require("bcrypt");
 
-
-//ROUTE SIGN UP 
+// ROUTE SIGN UP
 router.post("/signup", (req, res) => {
-  if (!checkBody(req.body, ['userName', 'lastName', 'firstName', 'mail', 'password'])) {
+  if (
+    !checkBody(req.body, [
+      "userName",
+      "lastName",
+      "firstName",
+      "mail",
+      "password",
+    ])
+  ) {
     res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
@@ -49,35 +56,49 @@ router.post("/signup", (req, res) => {
 
 //ROUTE SIGN IN
 
-router.post('/signin', (req, res) => {
-  if (!checkBody(req.body, ['mail', 'password'])) {
+router.post("/signin", (req, res) => {
+  // Vérifier la présence des champs requis dans la requête
+
+  if (!checkBody(req.body, ["mail", "password"])) {
     res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
-  User.findOne({mail: req.body.mail}).then(data => {
-    if(data && bcrypt.compareSync(req.body.password, data.password)){
-      res.json({result: true, token: data.token})
+  User.findOne({ mail: req.body.mail }).then((data) => {
+    // Vérifier si l'utilisateur existe et si le mot de passe correspond
+
+    if (data && bcrypt.compareSync(req.body.password, data.password)) {
+      // Si l'authentification réussit, renvoyer un jeton d'authentification
+
+      res.json({ result: true, token: data.token });
     } else {
-      res.json({result: false, error: 'Invalid email adress or password'})
+      res.json({ result: false, error: "Invalid email adress or password" });
     }
-  })
-})
+  });
+});
 
 //ADD NEW METEO
 router.patch("/addMeteo", (req, res) => {
+  // Recherche de l'utilisateur en fonction du jeton (token) fourni dans la requête
+
   User.findOne({ token: req.body.token }).then((data) => {
+    // Vérification si l'utilisateur existe
+
     if (!data) return res.json({ result: false, error: "User do not exist" });
+    // Mise à jour de l'utilisateur en ajoutant la nouvelle météo à son ensemble de favoris
+
     User.updateOne(
       { token: data.token },
       { $addToSet: { fav_meteo: req.body.newMeteo } }
-    ).then(data => {
-      console.log(data);
-      if (data.modifiedCount){ return res.json({
-        result: true,
-        meteo: "New Meteo saved in DDB",
-      });} 
-      return res.json({result: false, meteo: "Already added"})
- 
+    ).then((data) => {
+      // Vérification si la mise à jour a été effectuée avec succès (au moins un document modifié)
+
+      if (data.modifiedCount) {
+        return res.json({
+          result: true,
+          meteo: "New Meteo saved in DDB",
+        });
+      }
+      return res.json({ result: false, meteo: "Already added" });
     });
   });
 });
@@ -89,7 +110,7 @@ router.patch("/removeMeteo", (req, res) => {
 
     User.updateOne(
       { token: data.token },
-      { $pull: { fav_meteo : req.body.newMeteo } }
+      { $pull: { fav_meteo: req.body.newMeteo } }
     ).then((updateResult) => {
       console.log(updateResult);
       if (updateResult.modifiedCount) {
@@ -103,16 +124,15 @@ router.patch("/removeMeteo", (req, res) => {
   });
 });
 
-
 //Mettre de côté [Ajouter]
 
 router.patch("/addAside", (req, res) => {
   User.findOne({ token: req.body.token }).then((data) => {
     if (!data) return res.json({ result: false, error: "User do not exist" });
-      
+
     User.updateOne(
       { token: data.token },
-      { $addToSet: { fav_POI: req.body.id }}
+      { $addToSet: { fav_POI: req.body.id } }
     ).then((data) => {
       console.log(data);
       if (data.modifiedCount) {
@@ -145,7 +165,5 @@ router.patch("/removeAside", (req, res) => {
     });
   });
 });
-
-
 
 module.exports = router;
