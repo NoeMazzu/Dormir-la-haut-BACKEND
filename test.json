@@ -1,0 +1,48 @@
+{
+    "_id": {
+      "$oid": "65e5db329cc31a82b0abb37a"
+    },
+    "name": "Peterze",
+    "coordinates": {
+      "latitude": 44.67,
+      "longitude": 55.44
+    },
+    "desc": "dlkmlkmklm",
+    "favorite": [],
+    "photos": [
+      {
+        "url": "https://www.google.com/",
+        "liked": [
+          {
+            "$oid": "65e5cf860fbf3e89c9c6bcc6"
+          },
+          {
+            "$oid": "65e62078b75d7ce954718aec"
+          }
+        ],
+        "_id": {
+          "$oid": "65e5db329cc31a82b0abb37b"
+        }
+      },
+      {
+        "url": "https://yahoo.fr",
+        "liked": [
+          {
+            "$oid": "65e5cf860fbf3e89c9c6bcc6"
+          },
+          {
+            "$oid": "65e5cf860fbf3e89c9c6bcc6"
+          }
+        ],
+        "_id": {
+          "$oid": "65e5db329cc31a82b0abb37c"
+        }
+      }
+    ],
+    "createdBy": {
+      "$oid": "65e5cf860fbf3e89c9c6bcc6"
+    },
+    "type": "refuge",
+    "isPublic": false,
+    "__v": 2
+  }
