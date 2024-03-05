@@ -137,6 +137,24 @@ router.get("/getPhotos/:poiId", async (req, res) => {
     res.status(500).json({ error: "Error" });
   }
 });
+router.get("/getPoi/:poiId", async (req, res) => {
+  try {
+    const poiId = req.params.poiId;
+
+    // Recherche du POI par son ID
+    const poi = await Poi.findById(poiId);
+
+    // Vérifiez si le POI existe
+    if (!poi) {
+      return res.status(404).json({ error: "POI non trouvé" });
+    }
+
+    res.json({ poi: poi });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error" });
+  }
+});
 
 //*************Test Mongoose - ne pas utiliser******************** */
 // Route pour ajouter un like sur une photo
