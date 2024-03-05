@@ -70,6 +70,52 @@ router.patch("/photoUnLike", async (req, res) => {
   }
 });
 
+router.patch("/poiBookMark", async (req, res) => {
+  const userId = await User.findOne({ token: req.body.token });
+  // Check si userId._id est déjà présent dans le tableau favorite
+  const poi = await Poi.findOne({ _id: req.body.poiId, favorite: userId._id });
+  if (!poi) {
+    // Si userId._id n'est pas déjà présent, mettre  à jour le tableau avec $addToSet
+    await Poi.updateOne(
+      { _id: req.body.poiId },
+      { $addToSet: { favorite: userId._id } }
+    );
+    return res.json({
+      result: true,
+      message: "POI marqué comme favori par l'utilisateur",
+    });
+  } else {
+    // Si userId._id est déjà présent, ne rien faire
+    return res.json({
+      result: false,
+      message: "POI déjà marqué comme favori par l'utilisateur",
+    });
+  }
+});
+
+router.patch("/poiUnBookMark", async (req, res) => {
+  const userId = await User.findOne({ token: req.body.token });
+  // Check si userId._id est déjà présent dans le tableau favorite
+  const poi = await Poi.findOne({ _id: req.body.poiId, favorite: userId._id });
+  if (poi) {
+    // Si userId._id est déjà présent, supprimez-le du tableau avec $pull
+    await Poi.updateOne(
+      { _id: req.body.poiId },
+      { $pull: { favorite: userId._id } }
+    );
+    return res.json({
+      result: true,
+      message: "POI désépinglé par l'utilisateur",
+    });
+  } else {
+    // Si userId._id n'est pas présent, ne rien faire
+    return res.json({
+      result: false,
+      message: "POI non épinglé par l'utilisateur",
+    });
+  }
+});
+
 router.get("/getPhotos/:poiId", async (req, res) => {
   try {
     const poiId = req.params.poiId;
