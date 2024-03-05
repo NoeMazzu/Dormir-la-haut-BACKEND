@@ -7,6 +7,8 @@ const encodedTypeQuery = encodeURIComponent(typeQuery);
 const massifQuery = "53,14,18,20,12,8,3,11,7,9,17,22,6,16";
 const encodedMassifQuery = encodeURIComponent(massifQuery);
 
+//Chargement des données existantes depuis l'API du site Refuge Info
+//Chargement successif par type de données afin de pouvoir outrepasser la limite de 250 items
 router.post('/', async (req, res) => {
     try {
         const requestOptions = {
@@ -18,7 +20,7 @@ router.post('/', async (req, res) => {
 
         if (response.ok) {
             const result = await response.json();
-            // return res.json({result : true, data: result.features})
+
             const poiArray = result.features.map(poi => 
                 ({
                     name: poi.properties.nom.substring(0,30),
@@ -32,11 +34,10 @@ router.post('/', async (req, res) => {
                     type:"gîte",
                     isPublic:true
                 }))
-            console.log("Size PoiArray:",poiArray.length)
             
             const itemLoaded = await Poi.insertMany(poiArray)
 
-            return res.json({result: poiArray})
+            return res.json({result: true, message:'Chargement Ok', data: itemLoaded})
 
 
             // type: req.body.typePoi,
