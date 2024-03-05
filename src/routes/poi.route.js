@@ -32,13 +32,6 @@ router.patch("/photoLike", async (req, res) => {
   });
   console.log(poi.photos);
   const photo = await poi.photos.find((e) => e.id === req.body.photoId);
-<<<<<<< HEAD
-  photo.liked.push(userId);
-  console.log(photo);
-  const result = await poi.save();
-  res.json(result);
-  
-=======
   if (!photo.liked.map(id => id.toString()).includes(userId._id.toString()))
   {
     photo.liked.push(userId); //ajouter ici si l'élément est déjà présent dans tableau -toggle pour supprimer des likes
@@ -51,7 +44,6 @@ router.patch("/photoLike", async (req, res) => {
   {
     return res.json({result: false, message : 'La photo a déjà été liké par l\'utilisateur'})
   }
->>>>>>> testRoutePoi
 });
 
 
@@ -73,6 +65,7 @@ router.patch("/photoUnLike", async (req, res) => {
     return res.json({result: false, message : 'La photo n\'a pas encore été likée par l\'utilisateur'});
   }
 });
+
 
 //*************Test Mongoose - ne pas utiliser******************** */
 // Route pour ajouter un like sur une photo
