@@ -165,6 +165,13 @@ router.patch("/removeAside", (req, res) => {
   });
 });
 
-
+router.get('/myprofile', (req, res) => {
+  User.findOne({ token: req.body.token }).then((data) => {
+    if (!data) {
+      return res.json({ result: false, error: "User does not exist" });
+    }
+    res.json({ result: true, user: data });
+  })
+  });
 
 module.exports = router;
