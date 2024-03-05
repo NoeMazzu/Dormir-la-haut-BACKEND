@@ -9,7 +9,7 @@ const checklistTemplateSchema = mongoose.Schema({
 });
 
 const ChecklistTemplate = mongoose.model(
-  "checklistTemplates",
+  "checklists",
   checklistTemplateSchema
 );
 
