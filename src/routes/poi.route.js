@@ -32,20 +32,19 @@ router.patch("/photoLike", async (req, res) => {
   });
   console.log(poi.photos);
   const photo = await poi.photos.find((e) => e.id === req.body.photoId);
-  if (!photo.liked.map(id => id.toString()).includes(userId._id.toString()))
-  {
+  if (!photo.liked.map((id) => id.toString()).includes(userId._id.toString())) {
     photo.liked.push(userId); //ajouter ici si l'élément est déjà présent dans tableau -toggle pour supprimer des likes
-    console.log("PhotoLiked:",photo.liked);
-    console.log("UserID:",userId._id);
-    const result = await poi.save();  
-    return res.json({result: true, message: 'Ajout du like effectué'});
-  }
-  else
-  {
-    return res.json({result: false, message : 'La photo a déjà été liké par l\'utilisateur'})
+    console.log("PhotoLiked:", photo.liked);
+    console.log("UserID:", userId._id);
+    const result = await poi.save();
+    return res.json({ result: true, message: "Ajout du like effectué" });
+  } else {
+    return res.json({
+      result: false,
+      message: "La photo a déjà été liké par l'utilisateur",
+    });
   }
 });
-
 
 router.patch("/photoUnLike", async (req, res) => {
   const userId = await User.findOne({ token: req.body.token });
@@ -54,45 +53,136 @@ router.patch("/photoUnLike", async (req, res) => {
   });
   console.log(poi.photos);
   const photo = await poi.photos.find((e) => e.id === req.body.photoId);
-  if (photo.liked.map(id => id.toString()).includes(userId._id.toString())) {
+  if (photo.liked.map((id) => id.toString()).includes(userId._id.toString())) {
     // Supprimer l'élément du tableau liked
-    photo.liked = photo.liked.filter(id => id.toString() !== userId._id.toString());
-    console.log("PhotoLiked:",photo.liked);
-    console.log("UserID:",userId._id);
-    const result = await poi.save();  
-    return res.json({result: true, message: 'Like retiré avec succès'});
+    photo.liked = photo.liked.filter(
+      (id) => id.toString() !== userId._id.toString()
+    );
+    console.log("PhotoLiked:", photo.liked);
+    console.log("UserID:", userId._id);
+    const result = await poi.save();
+    return res.json({ result: true, message: "Like retiré avec succès" });
   } else {
-    return res.json({result: false, message : 'La photo n\'a pas encore été likée par l\'utilisateur'});
+    return res.json({
+      result: false,
+      message: "La photo n'a pas encore été likée par l'utilisateur",
+    });
   }
 });
 
+router.patch("/poiBookMark", async (req, res) => {
+  const userId = await User.findOne({ token: req.body.token });
+  // Check si userId._id est déjà présent dans le tableau favorite
+  const poi = await Poi.findOne({ _id: req.body.poiId, favorite: userId._id });
+  if (!poi) {
+    // Si userId._id n'est pas déjà présent, mettre  à jour le tableau avec $addToSet
+    await Poi.updateOne(
+      { _id: req.body.poiId },
+      { $addToSet: { favorite: userId._id } }
+    );
+    return res.json({
+      result: true,
+      message: "POI marqué comme favori par l'utilisateur",
+    });
+  } else {
+    // Si userId._id est déjà présent, ne rien faire
+    return res.json({
+      result: false,
+      message: "POI déjà marqué comme favori par l'utilisateur",
+    });
+  }
+});
+
+router.patch("/poiUnBookMark", async (req, res) => {
+  const userId = await User.findOne({ token: req.body.token });
+  // Check si userId._id est déjà présent dans le tableau favorite
+  const poi = await Poi.findOne({ _id: req.body.poiId, favorite: userId._id });
+  if (poi) {
+    // Si userId._id est déjà présent, supprimez-le du tableau avec $pull
+    await Poi.updateOne(
+      { _id: req.body.poiId },
+      { $pull: { favorite: userId._id } }
+    );
+    return res.json({
+      result: true,
+      message: "POI désépinglé par l'utilisateur",
+    });
+  } else {
+    // Si userId._id n'est pas présent, ne rien faire
+    return res.json({
+      result: false,
+      message: "POI non épinglé par l'utilisateur",
+    });
+  }
+});
+
+router.get("/getPhotos/:poiId", async (req, res) => {
+  try {
+    const poiId = req.params.poiId;
+
+    // Recherche du POI par son ID
+    const poi = await Poi.findById(poiId);
+
+    // Vérifiez si le POI existe
+    if (!poi) {
+      return res.status(404).json({ error: "POI non trouvé" });
+    }
+
+    // Récupérez toutes les photos du POI
+    const allPhotos = poi.photos;
+
+    res.json({ photos: allPhotos });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error" });
+  }
+});
+router.get("/getPoi/:poiId", async (req, res) => {
+  try {
+    const poiId = req.params.poiId;
+
+    // Recherche du POI par son ID
+    const poi = await Poi.findById(poiId);
+
+    // Vérifiez si le POI existe
+    if (!poi) {
+      return res.status(404).json({ error: "POI non trouvé" });
+    }
+
+    res.json({ poi: poi });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error" });
+  }
+});
 
 //*************Test Mongoose - ne pas utiliser******************** */
 // Route pour ajouter un like sur une photo
-router.patch('/addLike', (req, res) => {
+router.patch("/addLike", (req, res) => {
   const { poiId, photoId, userId } = req.body;
 
   // $addToSet pour ajouter l'ID de l'utilisateur ayant liké la photo au tableau liked
   const update = {
-    $addToSet: { 'photos.$[elem].liked': userId }
+    $addToSet: { "photos.$[elem].liked": userId },
   };
 
   // Options pour l'opérateur $addToSet afin de cibler le bon sous-document % ID de la photo
   const options = {
-    arrayFilters: [{ 'elem._id': photoId }]
+    arrayFilters: [{ "elem._id": photoId }],
   };
 
   // MAJ du document principal identifié par son ID (poiID) en utilisant l'opérateur $addToSet
   Poi.findByIdAndUpdate(poiId, update, options)
     .then((data) => {
-      console.log('poi:',poiId,'photo:',photoId,'userId:',userId)
-      console.log("resultat chargement:",data)
-      return res.status(200).json({ result:true, message: 'Like ajouté avec succès à la phot' });
+      console.log("poi:", poiId, "photo:", photoId, "userId:", userId);
+      console.log("resultat chargement:", data);
+      return res
+        .status(200)
+        .json({ result: true, message: "Like ajouté avec succès à la phot" });
     })
-    .catch(error => {
+    .catch((error) => {
       return res.status(500).json({ result: false, message: error.message });
     });
 });
-
 
 module.exports = router;
