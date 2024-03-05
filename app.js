@@ -10,6 +10,7 @@ var indexRouter = require("./src/routes/index");
 var usersRouter = require("./src/routes/users");
 var poiRouter = require("./src/routes/poi.route");
 var checklistsRouter = require('./src/routes/checklists');
+var newsApiRouter = require('./src/routes/newsApi');
 var app = express();
 
 app.use(logger("dev"));
@@ -22,5 +23,6 @@ app.use("/", indexRouter);
 app.use("/poi", poiRouter);
 app.use("/users", usersRouter);
 app.use('/checklists', checklistsRouter);
+app.use('/newsApi', newsApiRouter);
 
 module.exports = app;
