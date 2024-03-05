@@ -36,6 +36,7 @@ router.patch("/photoLike", async (req, res) => {
   console.log(photo);
   const result = await poi.save();
   res.json(result);
+  
 });
 
 module.exports = router;
