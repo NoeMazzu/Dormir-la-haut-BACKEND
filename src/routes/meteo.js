@@ -64,6 +64,7 @@ async function fetchWeather(city, massif) {
     return meteoData;
   } catch (error) {
     console.log("erreur lors de l'appel de l'API de meteo", error);
+    return error;
   }
 }
 
