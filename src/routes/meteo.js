@@ -79,8 +79,10 @@ router.get("/:massifs", async (req, res) => {
     const massifDetails = massifSrc.filter((byMassif) => byMassif.massif === massif);
     const meteoCity = massifDetails[0].ville;
     const encodedMassif = encodeURIComponent(meteoCity);
+    console.log("encodedMassif:",encodedMassif,"Massif:",massif)
 
     const meteo = await fetchWeather(encodedMassif, massif);
+    console.log("Meteo retour API:",meteo)
     meteoResult.push(meteo);
   }
   return res.json({ result: true, meteoInfo: meteoResult });
