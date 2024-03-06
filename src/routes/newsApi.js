@@ -18,7 +18,6 @@ router.get('/',(req,res) =>
         method: 'GET',
         redirect: 'follow'
     };
-    console.log('Cle:', NEWS_API_KEY)
     const apiUrl = `https://newsapi.org/v2/everything?q=${encodedSearchQuery}&apiKey=${NEWS_API_KEY}&language=fr&from=${formattedSevenDaysAgo}&to=${formattedToday}&searchIn=title`;
     
     fetch(apiUrl, requestOptions)
