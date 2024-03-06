@@ -12,6 +12,7 @@ var poiRouter = require("./src/routes/poi.route");
 var checklistsRouter = require('./src/routes/checklists');
 var newsApiRouter = require('./src/routes/newsApi');
 var loadPoiRouter = require('./src/routes/loadPoi');
+var meteoRouter = require('./src/routes/meteo');
 var app = express();
 
 app.use(logger("dev"));
@@ -26,5 +27,6 @@ app.use("/users", usersRouter);
 app.use('/checklists', checklistsRouter);
 app.use('/newsApi', newsApiRouter);
 app.use('/loadPoi', loadPoiRouter);
+app.use('/meteo', meteoRouter);
 
 module.exports = app;
