@@ -53,6 +53,7 @@ async function fetchWeather(city, massif) {
       requestOptions
     );
     const result = await response.json();
+    console.log('[API RES]:', result);
     const meteoData = {
       massif,
       weather: result.weather[0].main,
