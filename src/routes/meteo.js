@@ -54,9 +54,15 @@ async function fetchWeather(city, massif) {
     );
     const result = await response.json();
     console.log('[API RES]:', result);
+    //TODO - Verifier le fonctionnement de la gestion des erreurs
+    if (result.cod !== 200) {
+      throw { cod: result.cod, message: result.message };
+    }
     const meteoData = {
       massif,
       weather: result.weather[0].main,
+      //utilisation des icones de l'API - https://openweathermap.org/weather-conditions
+      weatherIcon:result.weather[0].icon, //https://openweathermap.org/img/wn/10d@2x.png - adresse de l'image ayant pour iconValue 10d
       temp: result.main.temp,
       windSpe: result.wind.speed,
       windOri: directionDuVent(result.wind.deg),
