@@ -72,6 +72,7 @@ async function fetchWeather(city, massif) {
 router.get("/:massifs", async (req, res) => {
   //Créer un tableau à partir des paramètre de l'appel de la route
   const massifs = req.params.massifs.split(",");
+  console.log("massifs issus des params : ",massifs)
   const meteoResult = [];
   for (let massif of massifs) 
   {
