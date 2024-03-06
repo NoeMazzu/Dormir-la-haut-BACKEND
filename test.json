@@ -46,3 +46,89 @@
     "isPublic": false,
     "__v": 2
   }
+
+
+
+
+  {
+    "type": "Feature",
+    "id": 5835,
+    "properties": {
+        "id": 5835,
+        "lien": "https://www.refuges.info/point/5835/cabane-non-gardee/Vanoise/Chalet-de-Valbuche/",
+        "nom": "Chalet de Valbuche",
+        "sym": "Fishing Hot Spot Facility",
+        "coord": {
+            "alt": 1970
+        },
+        "type": {
+            "id": 7,
+            "valeur": "cabane non gardée",
+            "icone": "cabane_a48_eau"
+        },
+        "places": {
+            "nom": "Places prévues pour dormir",
+            "valeur": 0
+        },
+        "etat": {
+            "valeur": ""
+        }
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            6.41461,
+            45.3586
+        ]
+    }
+},
+
+{
+    "coord": {
+        "lon": 6.3391,
+        "lat": 45.5238
+    },
+    "weather": [
+        {
+            "id": 600,
+            "main": "Snow",
+            "description": "light snow",
+            "icon": "13d"
+        }
+    ],
+    "base": "stations",
+    "main": {
+        "temp": 0.56,
+        "feels_like": -1.02,
+        "temp_min": -0.93,
+        "temp_max": 1.24,
+        "pressure": 1023,
+        "humidity": 95,
+        "sea_level": 1023,
+        "grnd_level": 898
+    },
+    "visibility": 700,
+    "wind": {
+        "speed": 1.44,
+        "deg": 304,
+        "gust": 1.52
+    },
+    "snow": {
+        "1h": 0.27
+    },
+    "clouds": {
+        "all": 100
+    },
+    "dt": 1709715272,
+    "sys": {
+        "type": 2,
+        "id": 2033369,
+        "country": "FR",
+        "sunrise": 1709705023,
+        "sunset": 1709746094
+    },
+    "timezone": 3600,
+    "id": 2975517,
+    "name": "Montsapey",
+    "cod": 200
+}
