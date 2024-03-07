@@ -29,13 +29,13 @@ function directionDuVent(deg) {
     if (deg < 0 || deg >= 360) {
         return "Direction invalide";
     } else if (deg < 90) {
-        return "Nord-Nord-Est";
+        return "N-NE";
     } else if (deg < 180) {
-        return "Est-Sud-Est";
+        return "E-SE";
     } else if (deg < 270) {
-        return "Sud-Sud-Ouest";
+        return "S-SO";
     } else {
-        return "Ouest-Nord-Ouest";
+        return "O-NO";
     }
 }
 
@@ -63,8 +63,8 @@ async function fetchWeather(city, massif) {
       weather: result.weather[0].main,
       //utilisation des icones de l'API - https://openweathermap.org/weather-conditions
       weatherIcon:result.weather[0].icon, //https://openweathermap.org/img/wn/10d@2x.png - adresse de l'image ayant pour iconValue 10d
-      temp: result.main.temp,
-      windSpe: result.wind.speed,
+      temp: Math.round(result.main.temp),
+      windSpe: Math.round(result.wind.speed),
       windOri: directionDuVent(result.wind.deg),
     };
     return meteoData;
