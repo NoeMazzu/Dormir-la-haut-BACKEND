@@ -94,7 +94,7 @@ async function fetchWeatherTTF(city, massif) {
       throw { cod: result.cod, message: result.message };
     }
 
-    let meteoData = [];
+    let meteoData = {};
     const meteoIndex = [
       {day: 'today', index: 0},
       {day: 'threeJ', index: 23},
@@ -102,8 +102,7 @@ async function fetchWeatherTTF(city, massif) {
 
     for (let index of meteoIndex)
     {
-      meteoData.push(
-        {[index.day]:
+      meteoData[index.day] =
           {
             weather: result.list[index.index].weather[0].main,
             //utilisation des icones de l'API - https://openweathermap.org/weather-conditions
@@ -112,7 +111,8 @@ async function fetchWeatherTTF(city, massif) {
             windSpe: Math.round(result.list[index.index].wind.speed),
             windOri: directionDuVent(result.list[index.index].wind.deg),
           }
-        })};
+    };
+    
       console.log('[METEODATA]:',meteoData)
     return meteoData;
   } catch (error) {
