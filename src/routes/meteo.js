@@ -105,7 +105,6 @@ async function fetchWeatherTTF(city, massif) {
       meteoData.push(
         {[index.day]:
           {
-            massif,
             weather: result.list[index.index].weather[0].main,
             //utilisation des icones de l'API - https://openweathermap.org/weather-conditions
             weatherIcon:result.list[index.index].weather[0].icon, //https://openweathermap.org/img/wn/10d@2x.png - adresse de l'image ayant pour iconValue 10d - retraité au niveau du Front
@@ -138,7 +137,7 @@ router.get("/:massifs", async (req, res) => {
 
     const meteo = await fetchWeatherTTF(encodedMassif, massif);
     // console.log("Meteo retour API:",meteo)
-    meteoResult.push(...meteo);
+    meteoResult.push({massif, meteoData : meteo});
   }
   return res.json({ result: true, meteoInfo: meteoResult });
 });
