@@ -97,8 +97,8 @@ async function fetchWeatherTTF(city, massif) {
     let meteoData = [];
     const meteoIndex = [
       {day: 'today', index: 0},
-      {day: '3J', index: 23},
-      {day: '5J', index: 39}];
+      {day: 'threeJ', index: 23},
+      {day: 'fiveJ', index: 39}];
 
     for (let index of meteoIndex)
     {
