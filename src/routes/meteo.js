@@ -40,7 +40,7 @@ function directionDuVent(deg) {
 }
 
 //TODO - Gerer le cas avec aucun retour de l'API (ville KO, non reconnue, n'existe plus sur l'API....)
-
+//Fonction pour récupérer les données d'une ville de l'API OpenWeathermap
 async function fetchWeather(city, massif) {
   var requestOptions = {
     method: "GET",
@@ -74,6 +74,53 @@ async function fetchWeather(city, massif) {
   }
 }
 
+//Fonction pour récupérer les données d'une ville SUR PLUSIEURS JOURS de l'API OpenWeathermap
+//Objectif : récupérer les données du jour [0], à 3 jours [23] et à 5 jours [39]
+async function fetchWeatherTTF(city, massif) {
+  var requestOptions = {
+    method: "GET",
+    redirect: "follow",
+  };
+
+  try {
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${METEO_API_KEY}&units=metric`,
+      requestOptions
+    );
+    const result = await response.json();
+    console.log('[API RES]:', result);
+    //TODO - Verifier le fonctionnement de la gestion des erreurs
+    if (result.cod !== '200') {
+      throw { cod: result.cod, message: result.message };
+    }
+
+    let meteoData = [];
+    const meteoIndex = [
+      {day: 'today', index: 0},
+      {day: '3J', index: 23},
+      {day: '5J', index: 39}];
+
+    for (let index of meteoIndex)
+    {
+      meteoData.push(
+        {[index.day]:
+          {
+            massif,
+            weather: result.list[index.index].weather[0].main,
+            //utilisation des icones de l'API - https://openweathermap.org/weather-conditions
+            weatherIcon:result.list[index.index].weather[0].icon, //https://openweathermap.org/img/wn/10d@2x.png - adresse de l'image ayant pour iconValue 10d - retraité au niveau du Front
+            temp: Math.round(result.list[index.index].main.temp),
+            windSpe: Math.round(result.list[index.index].wind.speed),
+            windOri: directionDuVent(result.list[index.index].wind.deg),
+          }
+        })};
+      console.log('[METEODATA]:',meteoData)
+    return meteoData;
+  } catch (error) {
+    // console.log("erreur lors de l'appel de l'API de meteo", error);
+    return error;
+  }
+}
 
 
 //Massif saisie sous le format : Vercors,Belledonne
@@ -89,9 +136,9 @@ router.get("/:massifs", async (req, res) => {
     const encodedMassif = encodeURIComponent(meteoCity);
     // console.log("encodedMassif:",encodedMassif,"Massif:",massif)
 
-    const meteo = await fetchWeather(encodedMassif, massif);
+    const meteo = await fetchWeatherTTF(encodedMassif, massif);
     // console.log("Meteo retour API:",meteo)
-    meteoResult.push(meteo);
+    meteoResult.push(...meteo);
   }
   return res.json({ result: true, meteoInfo: meteoResult });
 });
