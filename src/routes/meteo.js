@@ -130,12 +130,14 @@ router.get("/:massifs", async (req, res) => {
   //Créer un tableau à partir des paramètre de l'appel de la route
   const massifs = req.params.massifs.split(",");
   // console.log("massifs issus des params : ",massifs)
+  // console.log("massifs issus des params : ",massifs)
   const meteoResult = [];
   for (let massif of massifs) 
   {
     const massifDetails = massifSrc.filter((byMassif) => byMassif.massif === massif);
     const meteoCity = massifDetails[0].ville;
     const encodedMassif = encodeURIComponent(meteoCity);
+    // console.log("encodedMassif:",encodedMassif,"Massif:",massif)
     // console.log("encodedMassif:",encodedMassif,"Massif:",massif)
 
     const meteo = await fetchWeatherTTF(encodedMassif, massif);
