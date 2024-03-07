@@ -53,7 +53,7 @@ async function fetchWeather(city, massif) {
       requestOptions
     );
     const result = await response.json();
-    console.log('[API RES]:', result);
+    // console.log('[API RES]:', result);
     const meteoData = {
       massif,
       weather: result.weather[0].main,
@@ -73,17 +73,17 @@ async function fetchWeather(city, massif) {
 router.get("/:massifs", async (req, res) => {
   //Créer un tableau à partir des paramètre de l'appel de la route
   const massifs = req.params.massifs.split(",");
-  console.log("massifs issus des params : ",massifs)
+  // console.log("massifs issus des params : ",massifs)
   const meteoResult = [];
   for (let massif of massifs) 
   {
     const massifDetails = massifSrc.filter((byMassif) => byMassif.massif === massif);
     const meteoCity = massifDetails[0].ville;
     const encodedMassif = encodeURIComponent(meteoCity);
-    console.log("encodedMassif:",encodedMassif,"Massif:",massif)
+    // console.log("encodedMassif:",encodedMassif,"Massif:",massif)
 
     const meteo = await fetchWeather(encodedMassif, massif);
-    console.log("Meteo retour API:",meteo)
+    // console.log("Meteo retour API:",meteo)
     meteoResult.push(meteo);
   }
   return res.json({ result: true, meteoInfo: meteoResult });

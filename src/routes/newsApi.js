@@ -23,7 +23,7 @@ router.get('/',(req,res) =>
     fetch(apiUrl, requestOptions)
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            // console.log(data)
             return res.json({result : data.status, numOfArticles: data.totalResults, articles: data.articles,  })})
         .catch(error => console.error('Error fetching data:', error));
   

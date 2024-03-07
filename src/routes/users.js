@@ -111,7 +111,7 @@ router.patch("/removeMeteo", (req, res) => {
       { token: data.token },
       { $pull: { fav_meteo: req.body.newMeteo } }
     ).then((updateResult) => {
-      console.log(updateResult);
+      // console.log(updateResult);
       if (updateResult.modifiedCount) {
         return res.json({
           result: true,
@@ -133,7 +133,7 @@ router.patch("/addAside", (req, res) => {
       { token: data.token },
       { $addToSet: { fav_POI: req.body.id } }
     ).then((data) => {
-      console.log(data);
+      // console.log(data);
       if (data.modifiedCount) {
         return res.json({
           result: true,
@@ -153,7 +153,7 @@ router.patch("/removeAside", (req, res) => {
       { token: data.token },
       { $pull: { fav_POI: req.body.id } }
     ).then((updateResult) => {
-      console.log(updateResult);
+      // console.log(updateResult);
       if (updateResult.modifiedCount) {
         return res.json({
           result: true,
