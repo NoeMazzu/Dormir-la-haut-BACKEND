@@ -94,7 +94,7 @@ async function fetchWeatherTTF(city, massif) {
       throw { cod: result.cod, message: result.message };
     }
 
-    let meteoData = {};
+    let meteoData = [];
     const meteoIndex = [
       {day: 'today', index: 0},
       {day: 'threeJ', index: 23},
@@ -102,15 +102,18 @@ async function fetchWeatherTTF(city, massif) {
 
     for (let index of meteoIndex)
     {
-      meteoData[index.day] =
+      meteoData.push(
           {
-            weather: result.list[index.index].weather[0].main,
-            //utilisation des icones de l'API - https://openweathermap.org/weather-conditions
-            weatherIcon:result.list[index.index].weather[0].icon, //https://openweathermap.org/img/wn/10d@2x.png - adresse de l'image ayant pour iconValue 10d - retraité au niveau du Front
-            temp: Math.round(result.list[index.index].main.temp),
-            windSpe: Math.round(result.list[index.index].wind.speed),
-            windOri: directionDuVent(result.list[index.index].wind.deg),
-          }
+            time : index.day,
+            data:
+            {
+              weather: result.list[index.index].weather[0].main,
+              //utilisation des icones de l'API - https://openweathermap.org/weather-conditions
+              weatherIcon:result.list[index.index].weather[0].icon, //https://openweathermap.org/img/wn/10d@2x.png - adresse de l'image ayant pour iconValue 10d - retraité au niveau du Front
+              temp: Math.round(result.list[index.index].main.temp),
+              windSpe: Math.round(result.list[index.index].wind.speed),
+              windOri: directionDuVent(result.list[index.index].wind.deg),
+            }})
     };
     
       console.log('[METEODATA]:',meteoData)
