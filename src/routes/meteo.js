@@ -62,14 +62,14 @@ async function fetchWeather(city, massif) {
       massif,
       weather: result.weather[0].main,
       //utilisation des icones de l'API - https://openweathermap.org/weather-conditions
-      weatherIcon:result.weather[0].icon, //https://openweathermap.org/img/wn/10d@2x.png - adresse de l'image ayant pour iconValue 10d
+      weatherIcon:result.weather[0].icon, //https://openweathermap.org/img/wn/10d@2x.png - adresse de l'image ayant pour iconValue 10d - retraité au niveau du Front
       temp: Math.round(result.main.temp),
       windSpe: Math.round(result.wind.speed),
       windOri: directionDuVent(result.wind.deg),
     };
     return meteoData;
   } catch (error) {
-    console.log("erreur lors de l'appel de l'API de meteo", error);
+    // console.log("erreur lors de l'appel de l'API de meteo", error);
     return error;
   }
 }
@@ -80,17 +80,17 @@ async function fetchWeather(city, massif) {
 router.get("/:massifs", async (req, res) => {
   //Créer un tableau à partir des paramètre de l'appel de la route
   const massifs = req.params.massifs.split(",");
-  console.log("massifs issus des params : ",massifs)
+  // console.log("massifs issus des params : ",massifs)
   const meteoResult = [];
   for (let massif of massifs) 
   {
     const massifDetails = massifSrc.filter((byMassif) => byMassif.massif === massif);
     const meteoCity = massifDetails[0].ville;
     const encodedMassif = encodeURIComponent(meteoCity);
-    console.log("encodedMassif:",encodedMassif,"Massif:",massif)
+    // console.log("encodedMassif:",encodedMassif,"Massif:",massif)
 
     const meteo = await fetchWeather(encodedMassif, massif);
-    console.log("Meteo retour API:",meteo)
+    // console.log("Meteo retour API:",meteo)
     meteoResult.push(meteo);
   }
   return res.json({ result: true, meteoInfo: meteoResult });
