@@ -30,12 +30,12 @@ router.patch("/photoLike", async (req, res) => {
   const poi = await Poi.findOne({
     photos: { $elemMatch: { _id: req.body.photoId } },
   });
-  console.log(poi.photos);
+  // console.log(poi.photos);
   const photo = await poi.photos.find((e) => e.id === req.body.photoId);
   if (!photo.liked.map((id) => id.toString()).includes(userId._id.toString())) {
     photo.liked.push(userId); //ajouter ici si l'élément est déjà présent dans tableau -toggle pour supprimer des likes
-    console.log("PhotoLiked:", photo.liked);
-    console.log("UserID:", userId._id);
+    // console.log("PhotoLiked:", photo.liked);
+    // console.log("UserID:", userId._id);
     const result = await poi.save();
     return res.json({ result: true, message: "Ajout du like effectué" });
   } else {
@@ -51,15 +51,15 @@ router.patch("/photoUnLike", async (req, res) => {
   const poi = await Poi.findOne({
     photos: { $elemMatch: { _id: req.body.photoId } },
   });
-  console.log(poi.photos);
+  
   const photo = await poi.photos.find((e) => e.id === req.body.photoId);
   if (photo.liked.map((id) => id.toString()).includes(userId._id.toString())) {
     // Supprimer l'élément du tableau liked
     photo.liked = photo.liked.filter(
       (id) => id.toString() !== userId._id.toString()
     );
-    console.log("PhotoLiked:", photo.liked);
-    console.log("UserID:", userId._id);
+    // console.log("PhotoLiked:", photo.liked);
+    // console.log("UserID:", userId._id);
     const result = await poi.save();
     return res.json({ result: true, message: "Like retiré avec succès" });
   } else {
@@ -174,8 +174,8 @@ router.patch("/addLike", (req, res) => {
   // MAJ du document principal identifié par son ID (poiID) en utilisant l'opérateur $addToSet
   Poi.findByIdAndUpdate(poiId, update, options)
     .then((data) => {
-      console.log("poi:", poiId, "photo:", photoId, "userId:", userId);
-      console.log("resultat chargement:", data);
+      // console.log("poi:", poiId, "photo:", photoId, "userId:", userId);
+      // console.log("resultat chargement:", data);
       return res
         .status(200)
         .json({ result: true, message: "Like ajouté avec succès à la phot" });
