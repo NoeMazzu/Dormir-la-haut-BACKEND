@@ -166,12 +166,17 @@ router.patch("/removeAside", (req, res) => {
 });
 
 router.get('/myprofile', (req, res) => {
-  User.findOne({ token: req.body.token }).then((data) => {
+
+  const bearer = req.headers.authorization
+  const token = bearer.split(' ')[1]
+
+  User.findOne({ token }).then((data) => {
     if (!data) {
       return res.json({ result: false, error: "User does not exist" });
     }
-    res.json({ result: true, user: data });
+    res.json({ result: true, userName : data.userName, fav_POI : data.fav_POI, checklists : data.checklists });
   })
+
   });
 
   // ROUTE CHECKLIST UPDATE
