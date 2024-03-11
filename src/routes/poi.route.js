@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const Poi = require("../models/pois");
 const User = require("../models/users");
+const { ObjectId } = require('mongodb');
 
 router.post("/", function (req, res) {
   const newPoi = new Poi({
@@ -24,6 +25,28 @@ router.get("/", (req, res) => {
     res.json({ poi: data });
   });
 });
+
+router.get('/listOfPoi', (req, res) => {
+  const poisFav = req.query.poisFav;
+  //conversion en tableau des éléments reçus en paramètre lors de l'appel de la route
+  const arrPoisFav = poisFav.split(',');
+
+  if (!arrPoisFav || !Array.isArray(arrPoisFav) || arrPoisFav.length === 0) {
+    return res.status(400).json({ error: 'Invalid parameter: poisFav should be a non-empty array' });
+  }
+
+  const filter = {
+    '_id': {
+      '$in': arrPoisFav.map(element => new ObjectId(element))
+    }
+  };
+
+  Poi.find(filter)
+    .then((data) => {
+      return res.json(data);
+    })
+});
+
 
 router.patch("/photoLike", async (req, res) => {
   const userId = await User.findOne({ token: req.body.token });
