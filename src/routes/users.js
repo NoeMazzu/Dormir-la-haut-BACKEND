@@ -68,7 +68,7 @@ router.post("/signin", (req, res) => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
       // Si l'authentification réussit, renvoyer un jeton d'authentification
 
-      res.json({ result: true, token: data.token,userName: newDoc.userName });
+      res.json({ result: true, token: data.token,userName: data.userName });
     } else {
       res.json({ result: false, error: "Invalid email adress or password" });
     }
