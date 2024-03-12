@@ -6,39 +6,28 @@ const cloudinary = require("cloudinary").v2;
 
 router.post("/upload-image", async (req, res) => {
   // console.log(req.files);
-  try {
-    const image_file = req.files.photoNewPoi;
-    const temp_image = `/temp/${uniqid()}.jpg`;
-    console.log('TEMP Image :',temp_image);
-    const move_result = await image_file.mv(temp_image);
-    console.log('moveResult', move_result)
-    console.log('coucou');
+  const image_file = req.files.photoNewPoi;
+  const temp_image = `/temp/${uniqid()}.jpg`;
+  console.log("TEMP Image :", temp_image);
+  const move_result = await image_file.mv(temp_image);
 
-    if (move_result === undefined) {
-      const upload_res = await cloudinary.uploader.upload(temp_image, {
-        resource_type: "image",
-        public_id: `DLH/poi-${uniqid()}`,
-        overwrite: false, //! overwrites the existing picture at specified public_id
-      });
+  console.log("moveResult", move_result);
 
-        console.log(upload_res);
-      if (upload_res) fs.unlinkSync(temp_image);
+  if (move_result === undefined) {
+    const upload_res = await cloudinary.uploader.upload(temp_image, {
+      resource_type: "image",
+      public_id: `DLH/poi-${uniqid()}`,
+      overwrite: false, //! overwrites the existing picture at specified public_id
+    });
 
+    if (upload_res) {
+      fs.unlinkSync(temp_image);
       return res.status(201).json({
         success: true,
         response: upload_res,
         cdn_url: upload_res.secure_url,
       });
     }
-  } catch {
-    (error) => {
-      console.log("error", error);
-      return res.status(500).json({
-        success: false,
-        response: "catch error response",
-        error: "some shit happened",
-      });
-    };
   }
 
   return res.status(500).json({
@@ -46,20 +35,19 @@ router.post("/upload-image", async (req, res) => {
     response: "route default response",
     message: "shit happened outside of the try/catch block",
   });
-  // res.json({ body: req.files })
 });
 
-router.post('/upload', async (req, res) => {
+router.post("/upload", async (req, res) => {
   const photoPath = `./temp/${uniqid()}.png`;
   const resultMove = await req.files.photoNewPoi.mv(photoPath);
- 
+
   if (!resultMove) {
-     const resultCloudinary = await cloudinary.uploader.upload(photoPath);
-     fs.unlinkSync(photoPath); 
-    return res.json({ result: true, url: resultCloudinary.secure_url});      
+    const resultCloudinary = await cloudinary.uploader.upload(photoPath);
+    fs.unlinkSync(photoPath);
+    return res.json({ result: true, url: resultCloudinary.secure_url });
   } else {
     return res.json({ result: false, error: resultMove });
   }
- });
+});
 
 module.exports = router;
