@@ -7,8 +7,7 @@ const cloudinary = require("cloudinary").v2;
 router.post("/upload-image", async (req, res) => {
   // console.log(req.files);
   const image_file = req.files.photoNewPoi;
-  const temp_image = `/temp/${uniqid()}.jpg`;
-  './'
+  const temp_image = `/src/temp/${uniqid()}.jpg`;
   console.log("TEMP Image :", temp_image);
   const move_result = await image_file.mv(temp_image);
 
@@ -39,7 +38,7 @@ router.post("/upload-image", async (req, res) => {
 });
 
 router.post("/upload", async (req, res) => {
-  const photoPath = `./temp/${uniqid()}.png`;
+  const photoPath = `/src/temp/${uniqid()}.png`;
   const resultMove = await req.files.photoNewPoi.mv(photoPath);
 
   if (!resultMove) {
