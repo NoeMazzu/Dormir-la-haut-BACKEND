@@ -8,6 +8,7 @@ router.post("/upload-image", async (req, res) => {
   // console.log(req.files);
   const image_file = req.files.photoNewPoi;
   const temp_image = `/temp/${uniqid()}.jpg`;
+  './'
   console.log("TEMP Image :", temp_image);
   const move_result = await image_file.mv(temp_image);
 
