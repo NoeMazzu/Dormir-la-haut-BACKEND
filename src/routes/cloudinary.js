@@ -12,6 +12,7 @@ router.post("/upload-image", async (req, res) => {
     console.log('TEMP Image :',temp_image);
     const move_result = await image_file.mv(temp_image);
     console.log('moveResult', move_result)
+    console.log('coucou');
 
     if (move_result === undefined) {
       const upload_res = await cloudinary.uploader.upload(temp_image, {
