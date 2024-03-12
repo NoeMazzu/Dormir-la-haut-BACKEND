@@ -7,13 +7,7 @@ const bcrypt = require("bcrypt");
 
 // ROUTE SIGN UP
 router.post("/signup", (req, res) => {
-  if (
-    !checkBody(req.body, [
-      "userName",
-      "mail",
-      "password",
-    ])
-  ) {
+  if (!checkBody(req.body, ["userName", "mail", "password"])) {
     res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
@@ -45,7 +39,11 @@ router.post("/signup", (req, res) => {
       });
 
       newUser.save().then((newDoc) => {
-        res.json({ result: true, token: newDoc.token,userName: newDoc.userName });
+        res.json({
+          result: true,
+          token: newDoc.token,
+          userName: newDoc.userName,
+        });
       });
     });
   });
@@ -66,7 +64,7 @@ router.post("/signin", (req, res) => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
       // Si l'authentification réussit, renvoyer un jeton d'authentification
 
-      res.json({ result: true, token: data.token,userName: data.userName });
+      res.json({ result: true, token: data.token, userName: data.userName });
     } else {
       res.json({ result: false, error: "Invalid email adress or password" });
     }
@@ -99,6 +97,7 @@ router.patch("/addMeteo", (req, res) => {
     });
   });
 });
+
 
 //DELETE NEW METEO
 router.patch("/removeMeteo", (req, res) => {
@@ -163,21 +162,24 @@ router.patch("/removeAside", (req, res) => {
   });
 });
 
-router.get('/myprofile', (req, res) => {
-
-  const bearer = req.headers.authorization
-  const token = bearer.split(' ')[1]
+router.get("/myprofile", (req, res) => {
+  const bearer = req.headers.authorization;
+  const token = bearer.split(" ")[1];
 
   User.findOne({ token }).then((data) => {
     if (!data) {
       return res.json({ result: false, error: "User does not exist" });
     }
-    res.json({ result: true, userName : data.userName, fav_POI : data.fav_POI, checklists : data.checklists });
-  })
-
+    res.json({
+      result: true,
+      userName: data.userName,
+      fav_POI: data.fav_POI,
+      checklists: data.checklists,
+    });
   });
+});
 
-  // ROUTE CHECKLIST UPDATE
+// ROUTE CHECKLIST UPDATE
 router.patch("/checklistUpdate", (req, res) => {
   User.findOne({ token: req.body.token }).then((data) => {
     if (!data) return res.json({ result: false, error: "User does not exist" });
@@ -186,19 +188,21 @@ router.patch("/checklistUpdate", (req, res) => {
   User.updateOne(
     { checklists: { $elemMatch: { title: req.body.titleToSearch } } },
     { $set: { "checklists.$.title": req.body.newTitle } }
-  ).then(() => {
-    User.updateOne(
-      {
-        checklists: { $elemMatch: { title: req.body.newTitle } },
-      },
-      { $set: { "checklists.$.tasks.$[i]": req.body.newTaskDoc } },
-      {
-        arrayFilters: [{ "i.itemName": req.body.taskNameToSearch }],
-      }
-    ).then((data) => {
-      if (data.modifiedCount) return res.json({ result: true, data });
-    });
-  }).catch(error => res.json({ result: false, error }));
+  )
+    .then(() => {
+      User.updateOne(
+        {
+          checklists: { $elemMatch: { title: req.body.newTitle } },
+        },
+        { $set: { "checklists.$.tasks.$[i]": req.body.newTaskDoc } },
+        {
+          arrayFilters: [{ "i.itemName": req.body.taskNameToSearch }],
+        }
+      ).then((data) => {
+        if (data.modifiedCount) return res.json({ result: true, data });
+      });
+    })
+    .catch((error) => res.json({ result: false, error }));
 });
 
 module.exports = router;
