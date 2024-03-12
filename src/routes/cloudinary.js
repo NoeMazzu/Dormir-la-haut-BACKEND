@@ -20,6 +20,7 @@ router.post("/upload-image", async (req, res) => {
         overwrite: false, //! overwrites the existing picture at specified public_id
       });
 
+        console.log(upload_res);
       if (upload_res) fs.unlinkSync(temp_image);
 
       return res.status(201).json({
