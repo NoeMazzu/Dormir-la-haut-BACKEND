@@ -38,7 +38,7 @@ router.post("/upload-image", async (req, res) => {
 });
 
 router.post("/upload", async (req, res) => {
-  const photoPath = `/src/temp/${uniqid()}.png`;
+  const photoPath = `./src/temp/${uniqid()}.png`;
   const resultMove = await req.files.photoNewPoi.mv(photoPath);
 
   if (!resultMove) {
