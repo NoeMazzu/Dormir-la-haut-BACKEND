@@ -15,6 +15,8 @@ var loadPoiRouter = require('./src/routes/loadPoi');
 var meteoRouter = require('./src/routes/meteo');
 var cloudinaryRouter = require('./src/routes/cloudinary');
 var app = express();
+const fileUpload = require('express-fileupload');
+app.use(fileUpload());
 
 app.use(logger("dev"));
 app.use(express.json());
