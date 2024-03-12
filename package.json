@@ -17,6 +17,7 @@
     "mongoose": "^8.2.0",
     "morgan": "~1.9.1",
     "uid2": "^1.0.0",
+    "uniqid": "^5.4.0",
     "validator": "^13.11.0"
   },
   "devDependencies": {
