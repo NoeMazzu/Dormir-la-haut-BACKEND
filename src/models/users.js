@@ -27,7 +27,7 @@ const checklist_user = new Schema({
 const userSchema = new Schema({
   firstName: {
     type: String,
-    required: true,
+    // required: true,
     trim: true,
     validate(value) {
       if (!validator.isAlpha(value)) {
@@ -39,7 +39,7 @@ const userSchema = new Schema({
   },
   lastName: {
     type: String,
-    required: true,
+    // required: true,
     validate(value) {
       if (!validator.isAlpha(value)) {
         throw new Error(
