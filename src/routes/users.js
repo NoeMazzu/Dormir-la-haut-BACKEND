@@ -10,8 +10,6 @@ router.post("/signup", (req, res) => {
   if (
     !checkBody(req.body, [
       "userName",
-      "lastName",
-      "firstName",
       "mail",
       "password",
     ])
