@@ -56,7 +56,7 @@ router.post('/upload', async (req, res) => {
 router.post('/upload-image-mewen', async (req, res) => {
   try {
       const image_file = req.files.photoNewPoi;
-      const temp_image = `./tmp/${uniqid()}.jpg`;
+      const temp_image = `/tmp/${uniqid()}.jpg`;
 
       const move_result = await image_file.mv(temp_image);
       console.log(move_result)
