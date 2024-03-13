@@ -5,8 +5,9 @@ const User = require("../models/users");
 const { ObjectId } = require('mongodb');
 
 router.post("/", function (req, res) {
+  console.log('[REQ]', req.body.test)
   const newPoi = new Poi(req.body);
-  console.log('[REQ]', req.body)
+  
   newPoi.save().then((data) => res.json(data));
 });
 
