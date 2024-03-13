@@ -98,7 +98,6 @@ router.patch("/addMeteo", (req, res) => {
   });
 });
 
-
 //DELETE NEW METEO
 router.patch("/removeMeteo", (req, res) => {
   User.findOne({ token: req.body.token }).then((data) => {
