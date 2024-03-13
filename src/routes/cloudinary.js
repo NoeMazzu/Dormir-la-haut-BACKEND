@@ -59,7 +59,7 @@ router.post('/upload-image-mewen', async (req, res) => {
       const temp_image = `/tmp/${uniqid()}.jpg`;
 
       const move_result = await image_file.mv(temp_image);
-
+      console.log(move_result)
       if (move_result === undefined) {
           const upload_res = await cloudinary.uploader.upload(temp_image, {
               resource_type: 'image',
