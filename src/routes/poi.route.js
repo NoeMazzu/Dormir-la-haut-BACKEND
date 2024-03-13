@@ -149,6 +149,7 @@ router.get("/getPhotos/:poiId", async (req, res) => {
     res.status(500).json({ error: "Error" });
   }
 });
+
 router.get("/getPoi/:poiId", async (req, res) => {
   try {
     const poiId = req.params.poiId;
