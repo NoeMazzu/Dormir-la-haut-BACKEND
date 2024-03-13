@@ -10,11 +10,11 @@ const photos = new Schema({
   url: {
     type: String,
     // required: true,
-    validate(value) {
-      if (!validator.isURL(value)) {
-        throw new Error("Invalid URL");
-      }
-    },
+    // validate(value) {
+    //   if (!validator.isURL(value)) {
+    //     throw new Error("Invalid URL");
+    //   }
+    // },
   },
   liked: [
     {
