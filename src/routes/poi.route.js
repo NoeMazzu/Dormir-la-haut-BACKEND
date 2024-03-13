@@ -4,19 +4,10 @@ const Poi = require("../models/pois");
 const User = require("../models/users");
 const { ObjectId } = require('mongodb');
 
-router.post("/", function (req, res) {
-  const newPoi = new Poi({
-    name: req.body.namePoi,
-    coordinates: {
-      latitude: req.body.latitudePoi,
-      longitude: req.body.longitudePoi,
-    },
-    desc: req.body.descPoi,
-    photos: req.body.photosPoi,
-    createdBy: req.body.username,
-    type: req.body.typePoi,
-    isPublic: false,
-  });
+router.post("/", (req, res) => {
+  console.log('[REQ]', req.body)
+  const newPoi = new Poi(req.body);
+  
   newPoi.save().then((data) => res.json(data));
 });
 
