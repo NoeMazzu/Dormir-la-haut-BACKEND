@@ -40,7 +40,7 @@ router.post("/upload-image", async (req, res) => {
 
 //! ROUTE DU COURS LA CAPSULE
 router.post('/upload', async (req, res) => {
-  const photoPath = `./tmp/${uniqid()}.jpg`;
+  const photoPath = `/tmp/${uniqid()}.jpg`;
   const resultMove = await req.files.photoNewPoi.mv(photoPath);
  
   if (!resultMove) {
