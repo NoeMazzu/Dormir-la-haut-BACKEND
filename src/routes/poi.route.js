@@ -6,6 +6,7 @@ const { ObjectId } = require('mongodb');
 
 router.post("/", function (req, res) {
   const newPoi = new Poi(req.body);
+  console.log('[REQ]', req.body)
   newPoi.save().then((data) => res.json(data));
 });
 
