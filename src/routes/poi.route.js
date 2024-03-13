@@ -4,8 +4,10 @@ const Poi = require("../models/pois");
 const User = require("../models/users");
 const { ObjectId } = require('mongodb');
 
-router.post("/", function (req, res) {
+router.post("/", (req, res) => {
+  console.log('[REQ]', req.body)
   const newPoi = new Poi(req.body);
+  
   newPoi.save().then((data) => res.json(data));
 });
 

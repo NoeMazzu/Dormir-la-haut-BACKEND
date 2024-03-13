@@ -53,7 +53,6 @@ async function fetchWeather(city, massif) {
       requestOptions
     );
     const result = await response.json();
-    console.log('[API RES]:', result);
     //TODO - Verifier le fonctionnement de la gestion des erreurs
     if (result.cod !== 200) {
       throw { cod: result.cod, message: result.message };
@@ -88,7 +87,7 @@ async function fetchWeatherTTF(city, massif) {
       requestOptions
     );
     const result = await response.json();
-    console.log('[API RES]:', result);
+    // console.log('[API RES]:', result);
     //TODO - Verifier le fonctionnement de la gestion des erreurs
     if (result.cod !== '200') {
       throw { cod: result.cod, message: result.message };
@@ -116,7 +115,7 @@ async function fetchWeatherTTF(city, massif) {
             }})
     };
     
-      console.log('[METEODATA]:',meteoData)
+      // console.log('[METEODATA]:',meteoData)
     return meteoData;
   } catch (error) {
     // console.log("erreur lors de l'appel de l'API de meteo", error);
