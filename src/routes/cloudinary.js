@@ -52,45 +52,43 @@ router.post('/upload', async (req, res) => {
   }
  });
 
-// //! ROUTE DIRECTE
-// router.post("/upload-image-directly", async (req, res) => {
-// try {
-//   const image_file = req.files.photoNewPoi;
+// //! ROUTE MEWEN
+router.post('/upload-image-mewen', async (req, res) => {
+  try {
+      const image_file = req.files.photoNewPoi;
+      const temp_image = `/tmp/${uniqid()}.jpg`;
 
-//   // Ensure that a file is uploaded
-//   if (!image_file) {
-//     return res.status(400).json({
-//       success: false,
-//       message: "No file uploaded",
-//     });
-//   }
+      const move_result = await image_file.mv(temp_image);
 
-//   const upload_res = await cloudinary.uploader.upload(image_file.data, {
-//     resource_type: "auto", // Automatically detect the resource type
-//     public_id: `DLH/poi-${uniqid()}`,
-//     overwrite: false,
-//     file: { content: image_file.data }
-//   });
+      if (move_result === undefined) {
+          const upload_res = await cloudinary.uploader.upload(temp_image, {
+              resource_type: 'image',
+              public_id: `DLH/poi-${uniqid()}`,
+              overwrite: false, //! overwrites the existing picture at specified public_id
+          });
 
-//   if (upload_res) {
-//     return res.status(201).json({
-//       success: true,
-//       response: upload_res,
-//       cdn_url: upload_res.secure_url,
-//     });
-//   } else {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Failed to upload image to Cloudinary",
-//     });
-//   }
-// } catch (error) {
-//   console.error("Error:", error);
-//   return res.status(500).json({
-//     success: false,
-//     message: "An error occurred while processing the request",
-//   });
-// }
-// });
+          if (upload_res.secure_url) {
+              fs.unlinkSync(temp_image);
+              return res.status(201).json({
+                  success: true,
+                  response: upload_res,
+                  cdn_url: upload_res.secure_url,
+              });
+          }
+      }
+  } catch (error) {
+      return res.status(500).json({
+          success: false,
+          response: 'try/catch block error response',
+          message: error,
+      });
+  }
+
+  return res.status(500).json({
+      success: false,
+      response: 'route default response',
+      message: 'something wrong happened outside of the try/catch block',
+  });
+});
 
 module.exports = router;
