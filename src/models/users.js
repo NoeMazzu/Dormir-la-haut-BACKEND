@@ -85,7 +85,7 @@ const userSchema = new Schema({
   fav_POI: [
     {
       type: ObjectId,
-      ref: "POIS",
+      ref: "pois",
     },
   ],
   fav_meteo: [

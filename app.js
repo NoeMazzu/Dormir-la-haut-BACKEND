@@ -14,6 +14,7 @@ var newsApiRouter = require('./src/routes/newsApi');
 var loadPoiRouter = require('./src/routes/loadPoi');
 var meteoRouter = require('./src/routes/meteo');
 var cloudinaryRouter = require('./src/routes/cloudinary');
+
 var app = express();
 const fileUpload = require('express-fileupload');
 app.use(fileUpload());
