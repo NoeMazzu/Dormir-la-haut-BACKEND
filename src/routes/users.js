@@ -176,8 +176,8 @@ router.patch("/addAside", (req, res) => {
           meteo: "New Fav added",
         });
       }
-      // return res.json({ result: false, meteo: "Already added" });
-      return res.redirect('/users/removeAside')
+      return res.json({ result: false, meteo: "Already added" });
+      // return res.redirect('/users/removeAside')
     });
   });
 });
