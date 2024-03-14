@@ -212,7 +212,7 @@ router.get('/myprofile', (req, res) => {
     if (!data) {
       return res.json({ result: false, error: "User does not exist" });
     }
-    res.json({ result: true, userName : data.userName, fav_POI : data.fav_POI, checklists : data.checklists });
+    res.json({ result: true, userName : data.userName, fav_POI : data.fav_POI, checklists : data.checklists, meteo : data.fav_meteo });
   })
 
   });
