@@ -98,6 +98,46 @@ router.patch("/addMeteo", (req, res) => {
   });
 });
 
+//NEWVERSION NEWMETEO
+router.patch("/addMeteo2", (req, res) => 
+{
+  // Recherche de l'utilisateur en fonction du jeton (token) fourni dans la requête
+  User.findOne({ token: req.body.token }).then((user) => 
+  {
+    // Vérification si l'utilisateur existe
+    if (!user) return res.json({ result: false, error: "User does not exist" });
+    let newMeteo = req.body.newMeteo; 
+    // Vérifier si newMeteo est une chaîne unique ou une chaîne de mots délimitée par des virgules
+    if (typeof newMeteo === 'string') 
+    {
+      newMeteo = newMeteo.split(',');
+    } 
+    else if (!Array.isArray(newMeteo)) 
+    {
+      return res.json({ result: false, error: "Invalid value for newMeteo" });
+    }
+    // Mise à jour de l'utilisateur en remplaçant complètement le champ fav_meteo par les nouvelles valeurs - $set
+    User.updateOne(
+      { token: user.token },
+      { $set: { fav_meteo: newMeteo } }
+    ).then((result) => 
+      {
+          return res.json({
+            result: true,
+            meteo: "New Meteo saved in database",
+          });
+      }).catch(error => 
+        {
+          return res.status(500).json({ result: false, error: error.message });
+        });
+    }).catch(error => {
+      return res.status(500).json({ result: false, error: error.message });
+    });
+});
+
+
+
+
 //DELETE NEW METEO
 router.patch("/removeMeteo", (req, res) => {
   User.findOne({ token: req.body.token }).then((data) => {

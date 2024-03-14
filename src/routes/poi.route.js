@@ -5,10 +5,8 @@ const User = require("../models/users");
 const { ObjectId } = require('mongodb');
 
 router.post("/", (req, res) => {
-  console.log('[REQ]', req.body)
   const newPoi = new Poi(req.body);
-  
-  newPoi.save().then((data) => res.json(data));
+  newPoi.save().then((data) => res.json({result: true, data}));
 });
 
 router.get("/", (req, res) => {
@@ -19,7 +17,6 @@ router.get("/", (req, res) => {
 
 router.get('/listOfPoi', (req, res) => {
   const poisFav = req.query.poisFav;
-  //conversion en tableau des éléments reçus en paramètre lors de l'appel de la route
   const arrPoisFav = poisFav.split(',');
 
   if (!arrPoisFav || !Array.isArray(arrPoisFav) || arrPoisFav.length === 0) {
@@ -44,12 +41,10 @@ router.patch("/photoLike", async (req, res) => {
   const poi = await Poi.findOne({
     photos: { $elemMatch: { _id: req.body.photoId } },
   });
-  // console.log(poi.photos);
+
   const photo = await poi.photos.find((e) => e.id === req.body.photoId);
   if (!photo.liked.map((id) => id.toString()).includes(userId._id.toString())) {
     photo.liked.push(userId); //ajouter ici si l'élément est déjà présent dans tableau -toggle pour supprimer des likes
-    // console.log("PhotoLiked:", photo.liked);
-    // console.log("UserID:", userId._id);
     const result = await poi.save();
     return res.json({ result: true, message: "Ajout du like effectué" });
   } else {
@@ -171,6 +166,47 @@ router.get("/getPoi/:poiId", async (req, res) => {
   }
 });
 
+//! ROUTE POUR SUPP DES POI
+router.delete('/delete-random-elements', async (req, res) => {
+  try {
+    // Get total count of documents in the collection
+    const totalCount = await Poi.countDocuments();
+
+    // Generate 400 random indexes
+    const indexesToDelete = Array.from({ length: 50 }, () =>
+      Math.floor(Math.random() * totalCount)
+    );
+
+    // Fetch documents at random indexes and delete them
+    const deletedElements = await Promise.all(
+      indexesToDelete.map(async index => {
+        const docToDelete = await Poi.findOne().skip(index);
+        if (docToDelete) {
+          await Poi.deleteOne({ _id: docToDelete._id });
+          return docToDelete;
+        }
+      })
+    );
+
+    res.json({ deletedElements });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//! ROUTE POUR SUPP DES POI Privés
+router.delete('/delete-private', async (req, res) => {
+  try {
+    const deletedElements = await Poi.deleteMany({isPublic:false})
+    res.json({ deletedElements });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
+
+
 //*************Test Mongoose - ne pas utiliser******************** */
 // Route pour ajouter un like sur une photo
 router.patch("/addLike", (req, res) => {
@@ -199,5 +235,6 @@ router.patch("/addLike", (req, res) => {
       return res.status(500).json({ result: false, message: error.message });
     });
 });
+
 
 module.exports = router;
