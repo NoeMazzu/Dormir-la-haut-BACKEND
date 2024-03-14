@@ -216,6 +216,7 @@ router.get("/myprofile", (req, res) => {
         userName: data.userName,
         fav_POI: data.fav_POI,
         checklists: data.checklists,
+        meteo: data.fav_meteo,
       });
     });
 });
