@@ -28,7 +28,7 @@ const poiSchema = Schema({
   name: {
     type: String,
     required: true,
-    maxLength: 30,
+    maxLength: 50,
   },
   coordinates: {
     latitude: {
