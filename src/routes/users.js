@@ -108,7 +108,6 @@ router.patch("/addMeteo", (req, res) => {
 router.patch("/addMeteo2", authenticationMiddleware, (req, res) => 
 {
   // Recherche de l'utilisateur en fonction du jeton (token) fourni dans la requête
-  console.log('[USER UID]:',req.uid)
   User.findOne({ token: req.uid }).then((user) => 
   {
     // Vérification si l'utilisateur existe
