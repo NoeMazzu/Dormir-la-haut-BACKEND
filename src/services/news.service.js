@@ -6,7 +6,8 @@ const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
 const formattedToday = today.toISOString().split("T")[0];
 const formattedSevenDaysAgo = sevenDaysAgo.toISOString().split("T")[0];
 
-const searchQuery = "alpes AND (meteo OR météo)";
+const searchQuery = "alpes";
+// const searchQuery = "alpes AND (meteo OR météo)";
 const encodedSearchQuery = encodeURIComponent(searchQuery);
 
 const queryAPI = async () => {

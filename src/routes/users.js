@@ -4,6 +4,7 @@ const User = require("../models/users");
 const { checkBody } = require("../middlewares/checkBody");
 const uid2 = require("uid2");
 const bcrypt = require("bcrypt");
+const createJWTToken = require('../middlewares/jwtGeneration.Middleware');
 
 // ROUTE SIGN UP
 router.post("/signup", (req, res) => {
@@ -38,10 +39,12 @@ router.post("/signup", (req, res) => {
         token: uid2(32),
       });
 
+      const tokenJWT = createJWTToken(newUser.token);
+
       newUser.save().then((newDoc) => {
         res.json({
           result: true,
-          token: newDoc.token,
+          token: tokenJWT,
           userName: newDoc.userName,
         });
       });
