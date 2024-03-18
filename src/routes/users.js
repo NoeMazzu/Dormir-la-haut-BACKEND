@@ -205,25 +205,28 @@ router.patch("/removeAside", (req, res) => {
   });
 });
 
-router.get("/myprofile", (req, res) => {
-  const bearer = req.headers.authorization;
-  const token = bearer.split(" ")[1];
+// router.get("/myprofile", (req, res) => {
+//   const bearer = req.headers.authorization;
+//   const token = bearer.split(" ")[1];
 
-  User.findOne({ token })
-    .populate("fav_POI")
-    .then((data) => {
-      if (!data) {
-        return res.json({ result: false, error: "User does not exist" });
-      }
-      res.json({
-        result: true,
-        userName: data.userName,
-        fav_POI: data.fav_POI,
-        checklists: data.checklists,
-        meteo: data.fav_meteo,
-      });
-    });
-});
+//   User.findOne({ token })
+//     .populate("fav_POI")
+//     .then((data) => {
+//       if (!data) {
+//         return res.json({ result: false, error: "User does not exist" });
+//       }
+//       res.json({
+//         result: true,
+//         userName: data.userName,
+//         fav_POI: data.fav_POI,
+//         checklists: data.checklists,
+//         meteo: data.fav_meteo,
+//       });
+//     });
+// });
+const userController = require('../controllers/user.controller');
+const authenticationMiddleware = require('../middlewares/authentication.middleware');
+router.get('/myprofile', authenticationMiddleware, userController.getUserProfile);
 
 // ROUTE CHECKLIST UPDATE
 router.patch("/checklistUpdate", (req, res) => {
