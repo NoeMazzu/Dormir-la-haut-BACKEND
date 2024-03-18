@@ -65,10 +65,10 @@ module.exports = async (req, res, next) => {
     const bearer = authorization.split(' ')[1]; // Remove "Bearer" from input string
 
     // Decode the JWT token
-    try {
+    try 
+	{
         const decoded = jwt.verify(bearer, process.env.JWT_SECRET);
         const userId = decoded.token;
-		console.log("USERID:",userId)
         // Check if the user exists in the database
         const user = await User.findOne({token:userId});
 
@@ -76,7 +76,10 @@ module.exports = async (req, res, next) => {
 
         req.uid = userId;
         return next();
-    } catch (error) {
+
+    } 
+	catch (error) 
+	{
         // Handle JWT verification errors or database query errors
         if (error.name === 'JsonWebTokenError') {
             return next(new Error('403 Forbidden'));
