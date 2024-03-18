@@ -39,12 +39,12 @@ router.post("/signup", (req, res) => {
         token: uid2(32),
       });
 
-      const tokenJWT = createJWTToken(newUser.token);
+      // const tokenJWT = createJWTToken(newUser.token);
 
       newUser.save().then((newDoc) => {
         res.json({
           result: true,
-          token: tokenJWT,
+          token: newUser.token,
           userName: newDoc.userName,
         });
       });
