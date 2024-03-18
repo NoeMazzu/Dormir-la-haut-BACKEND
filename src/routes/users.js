@@ -40,13 +40,13 @@ router.post("/signup", (req, res) => {
       });
 
       console.log('TOKENUID2',newUser.token)
-      const tokenJWT = createJWTToken(newUser.token);
-      console.log('[TOKENJWT généré',tokenJWT)
+      // const tokenJWT = createJWTToken(newUser.token);
+      // console.log('[TOKENJWT généré',tokenJWT)
 
       newUser.save().then((newDoc) => {
         res.json({
           result: true,
-          token: tokenJWT,
+          token: newDoc.token,
           userName: newDoc.userName,
         });
       });
