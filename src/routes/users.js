@@ -6,6 +6,9 @@ const uid2 = require("uid2");
 const bcrypt = require("bcrypt");
 const createJWTToken = require('../middlewares/jwtGeneration.Middleware');
 
+const userController = require('../controllers/user.controller');
+const authenticationMiddleware = require('../middlewares/authentication.middleware');
+
 // ROUTE SIGN UP
 router.post("/signup", (req, res) => {
   if (!checkBody(req.body, ["userName", "mail", "password"])) {
@@ -102,10 +105,11 @@ router.patch("/addMeteo", (req, res) => {
 });
 
 //NEWVERSION NEWMETEO
-router.patch("/addMeteo2", (req, res) => 
+router.patch("/addMeteo2", authenticationMiddleware, (req, res) => 
 {
   // Recherche de l'utilisateur en fonction du jeton (token) fourni dans la requête
-  User.findOne({ token: req.body.token }).then((user) => 
+  console.log('[USER UID]:',req.uid)
+  User.findOne({ token: req.uid }).then((user) => 
   {
     // Vérification si l'utilisateur existe
     if (!user) return res.json({ result: false, error: "User does not exist" });
@@ -224,8 +228,7 @@ router.patch("/removeAside", (req, res) => {
 //       });
 //     });
 // });
-const userController = require('../controllers/user.controller');
-const authenticationMiddleware = require('../middlewares/authentication.middleware');
+
 router.get('/myprofile', authenticationMiddleware, userController.getUserProfile);
 
 // ROUTE CHECKLIST UPDATE
