@@ -32,19 +32,19 @@ router.post("/signup", (req, res) => {
 
       const newUser = new User({
         userName: req.body.userName,
-        lastName: req.body.lastName,
-        firstName: req.body.firstName,
+        // lastName: req.body.lastName,
+        // firstName: req.body.firstName,
         mail: req.body.mail,
         password: hash,
         token: uid2(32),
       });
 
-      // const tokenJWT = createJWTToken(newUser.token);
+      const tokenJWT = createJWTToken(newUser.token);
 
       newUser.save().then((newDoc) => {
         res.json({
           result: true,
-          token: newUser.token,
+          token: tokenJWT,
           userName: newDoc.userName,
         });
       });
