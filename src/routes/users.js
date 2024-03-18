@@ -78,6 +78,7 @@ router.post("/signin", (req, res) => {
 });
 
 //ADD NEW METEO
+//TODO - NON UTILISE
 router.patch("/addMeteo", (req, res) => {
   // Recherche de l'utilisateur en fonction du jeton (token) fourni dans la requête
 
@@ -145,8 +146,9 @@ router.patch("/addMeteo2", authenticationMiddleware, (req, res) =>
 
 
 //DELETE NEW METEO
-router.patch("/removeMeteo", (req, res) => {
-  User.findOne({ token: req.body.token }).then((data) => {
+//TODO - NON UTILISE
+router.patch("/removeMeteo", authenticationMiddleware, (req, res) => {
+  User.findOne({ token: req.uid }).then((data) => {
     if (!data) return res.json({ result: false, error: "User does not exist" });
 
     User.updateOne(
@@ -167,8 +169,8 @@ router.patch("/removeMeteo", (req, res) => {
 
 //Mettre de côté [Ajouter]
 
-router.patch("/addAside", (req, res) => {
-  User.findOne({ token: req.body.token }).then((data) => {
+router.patch("/addAside", authenticationMiddleware, (req, res) => {
+  User.findOne({ token: req.uid }).then((data) => {
     if (!data) return res.json({ result: false, error: "User do not exist" });
 
     User.updateOne(
@@ -188,8 +190,8 @@ router.patch("/addAside", (req, res) => {
   });
 });
 //Mettre de côté [Delete]
-router.patch("/removeAside", (req, res) => {
-  User.findOne({ token: req.body.token }).then((data) => {
+router.patch("/removeAside", authenticationMiddleware, (req, res) => {
+  User.findOne({ token: req.uid }).then((data) => {
     if (!data) return res.json({ result: false, error: "User does not exist" });
 
     User.updateOne(
