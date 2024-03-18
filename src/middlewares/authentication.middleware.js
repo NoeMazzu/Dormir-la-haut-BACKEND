@@ -67,8 +67,8 @@ module.exports = async (req, res, next) => {
     // Decode the JWT token
     try {
         const decoded = jwt.verify(bearer, process.env.JWT_SECRET);
-        const userId = decoded;
-
+        const userId = decoded.token;
+		console.log("USERID:",userId)
         // Check if the user exists in the database
         const user = await User.findOne({token:userId});
 
