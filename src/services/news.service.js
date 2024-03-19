@@ -6,7 +6,7 @@ const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
 const formattedToday = today.toISOString().split("T")[0];
 const formattedSevenDaysAgo = sevenDaysAgo.toISOString().split("T")[0];
 
-const searchQuery = "alpes";
+const searchQuery = "alpes AND (meteo OR météo OR randonnée OR randonneur OR bivouac OR excursion OR trek OR balade OR risque OR sécurité OR exploration OR expédition OR alpinisme OR ascension)";
 // const searchQuery = "alpes AND (meteo OR météo)";
 const encodedSearchQuery = encodeURIComponent(searchQuery);
 
