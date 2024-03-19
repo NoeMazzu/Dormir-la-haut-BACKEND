@@ -58,7 +58,7 @@ const poiSchema = Schema({
   },
   type: {
     type: String,
-    enum: ["bivouac", "refuge", "gîte", "cabane", "autre"],
+    enum: ["Bivouac", "Refuge", "Gîte", "Cabane", "Autre"],
   },
   isPublic: {
     type: Boolean,

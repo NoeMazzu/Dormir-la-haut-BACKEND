@@ -4,6 +4,10 @@ const User = require("../models/users");
 const { checkBody } = require("../middlewares/checkBody");
 const uid2 = require("uid2");
 const bcrypt = require("bcrypt");
+const createJWTToken = require('../middlewares/jwtGeneration.Middleware');
+
+const userController = require('../controllers/user.controller');
+const authenticationMiddleware = require('../middlewares/authentication.middleware');
 
 // ROUTE SIGN UP
 router.post("/signup", (req, res) => {
@@ -36,10 +40,12 @@ router.post("/signup", (req, res) => {
         token: uid2(32),
       });
 
+      const tokenJWT = createJWTToken({token : newUser.token});
+
       newUser.save().then((newDoc) => {
         res.json({
           result: true,
-          token: newDoc.token,
+          token: tokenJWT,
           userName: newDoc.userName,
         });
       });
@@ -70,6 +76,7 @@ router.post("/signin", (req, res) => {
 });
 
 //ADD NEW METEO
+//TODO - NON UTILISE
 router.patch("/addMeteo", (req, res) => {
   // Recherche de l'utilisateur en fonction du jeton (token) fourni dans la requête
 
@@ -97,10 +104,10 @@ router.patch("/addMeteo", (req, res) => {
 });
 
 //NEWVERSION NEWMETEO
-router.patch("/addMeteo2", (req, res) => 
+router.patch("/addMeteo2", authenticationMiddleware, (req, res) => 
 {
   // Recherche de l'utilisateur en fonction du jeton (token) fourni dans la requête
-  User.findOne({ token: req.body.token }).then((user) => 
+  User.findOne({ token: req.uid }).then((user) => 
   {
     // Vérification si l'utilisateur existe
     if (!user) return res.json({ result: false, error: "User does not exist" });
@@ -137,8 +144,9 @@ router.patch("/addMeteo2", (req, res) =>
 
 
 //DELETE NEW METEO
-router.patch("/removeMeteo", (req, res) => {
-  User.findOne({ token: req.body.token }).then((data) => {
+//TODO - NON UTILISE
+router.patch("/removeMeteo", authenticationMiddleware, (req, res) => {
+  User.findOne({ token: req.uid }).then((data) => {
     if (!data) return res.json({ result: false, error: "User does not exist" });
 
     User.updateOne(
@@ -159,8 +167,8 @@ router.patch("/removeMeteo", (req, res) => {
 
 //Mettre de côté [Ajouter]
 
-router.patch("/addAside", (req, res) => {
-  User.findOne({ token: req.body.token }).then((data) => {
+router.patch("/addAside", authenticationMiddleware, (req, res) => {
+  User.findOne({ token: req.uid }).then((data) => {
     if (!data) return res.json({ result: false, error: "User do not exist" });
 
     User.updateOne(
@@ -175,12 +183,13 @@ router.patch("/addAside", (req, res) => {
         });
       }
       return res.json({ result: false, meteo: "Already added" });
+      // return res.redirect('/users/removeAside')
     });
   });
 });
 //Mettre de côté [Delete]
-router.patch("/removeAside", (req, res) => {
-  User.findOne({ token: req.body.token }).then((data) => {
+router.patch("/removeAside", authenticationMiddleware, (req, res) => {
+  User.findOne({ token: req.uid }).then((data) => {
     if (!data) return res.json({ result: false, error: "User does not exist" });
 
     User.updateOne(
@@ -199,25 +208,27 @@ router.patch("/removeAside", (req, res) => {
   });
 });
 
-router.get("/myprofile", (req, res) => {
-  const bearer = req.headers.authorization;
-  const token = bearer.split(" ")[1];
+// router.get("/myprofile", (req, res) => {
+//   const bearer = req.headers.authorization;
+//   const token = bearer.split(" ")[1];
 
-  User.findOne({ token })
-    .populate("fav_POI")
-    .then((data) => {
-      if (!data) {
-        return res.json({ result: false, error: "User does not exist" });
-      }
-      res.json({
-        result: true,
-        userName: data.userName,
-        fav_POI: data.fav_POI,
-        checklists: data.checklists,
-        meteo: data.fav_meteo,
-      });
-    });
-});
+//   User.findOne({ token })
+//     .populate("fav_POI")
+//     .then((data) => {
+//       if (!data) {
+//         return res.json({ result: false, error: "User does not exist" });
+//       }
+//       res.json({
+//         result: true,
+//         userName: data.userName,
+//         fav_POI: data.fav_POI,
+//         checklists: data.checklists,
+//         meteo: data.fav_meteo,
+//       });
+//     });
+// });
+
+router.get('/myprofile', authenticationMiddleware, userController.getUserProfile);
 
 // ROUTE CHECKLIST UPDATE
 router.patch("/checklistUpdate", (req, res) => {

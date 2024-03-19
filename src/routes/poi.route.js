@@ -6,6 +6,7 @@ const { ObjectId } = require('mongodb');
 
 router.post("/", (req, res) => {
   const newPoi = new Poi(req.body);
+  console.log('[APPEL Route POST - contenu req.body]',req.body)
   newPoi.save().then((data) => res.json({result: true, data}));
 });
 
