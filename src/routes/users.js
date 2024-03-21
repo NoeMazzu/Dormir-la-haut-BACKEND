@@ -9,7 +9,7 @@ const createJWTToken = require('../middlewares/jwtGeneration.Middleware');
 const userController = require('../controllers/user.controller');
 const authenticationMiddleware = require('../middlewares/authentication.middleware');
 
-// ROUTE SIGN UP
+// ROUTE SIGN UP - OK
 router.post("/signup", (req, res) => {
   if (!checkBody(req.body, ["userName", "mail", "password"])) {
     res.json({ result: false, error: "Missing or empty fields" });
