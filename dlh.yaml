@@ -1,0 +1,600 @@
+openapi: 3.0.3
+info:
+  title: Dormir là-haut
+  description: API pour la gestion des routes relatives à linscription, l'authentificatrion et de mise à jour des données liées aux documents de la collection Users (bookmark, massifs météo favoris, checklists...)
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: users
+    description: Routes relatives à linscription, l'authentificatrion et de mise à jour des données liées aux documents de la collection Users (bookmark, massifs météo favoris, checklists...)
+  - name: newsApi
+    description: Route relative à la récupération des données météo depuis l'API OpenWeatherMap
+  - name: poi
+    description: Routes relatives à la récupération, création et mise à jour des informations sur les lieux d'hébergement (POI)
+  - name: cloudinary
+    description: Route permettant le chargement de photos vers le CDN Cloudinary
+  - name: meteo
+    description: Route permettant de récupérer les données météo par massifs en provenance de l'API OpenWeatherMAp
+paths:
+  /users/signup:
+    post:
+      tags:
+        - users
+      summary: Créer un nouveau compte utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userName:
+                  type: string
+                mail:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Compte utilisateur créé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  token:
+                    type: string
+                  userName:
+                    type: string
+  /users/signin:
+    post:
+      tags:
+        - users
+      summary: Connexion avec un compte existant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mail:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  token:
+                    type: string
+                  userName:
+                    type: string
+  /users/addMeteo2:
+    patch:
+      tags:
+        - users
+      summary: Ajouter de nouvelles informations météo
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newMeteo:
+                  type: string
+      responses:
+        '200':
+          description: Nouvelles informations météo ajoutées avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  meteo:
+                    type: string
+      x-authenticationMiddleware: true
+  /users/removeMeteo:
+    patch:
+      tags:
+        - users
+      summary: Supprimer des informations météo
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newMeteo:
+                  type: string
+      responses:
+        '200':
+          description: Informations météo supprimées avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  meteo:
+                    type: string
+      x-authenticationMiddleware: true
+  /users/addAside:
+    patch:
+      tags:
+        - users
+      summary: Ajouter des favoris / bookmarks
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+      responses:
+        '200':
+          description: Favoris ajoutés avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  meteo:
+                    type: string
+      x-authenticationMiddleware: true
+  /users/removeAside:
+    patch:
+      tags:
+        - users
+      summary: Supprimer des favoris / bookmarks
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+      responses:
+        '200':
+          description: Favoris supprimés avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  meteo:
+                    type: string
+      x-authenticationMiddleware: true
+  /users/checklistUpdate:
+    patch:
+      tags:
+        - users
+      summary: Mettre à jour la checklist de l'utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                titleToSearch:
+                  type: string
+                newTitle:
+                  type: string
+                newTaskDoc:
+                  type: object
+      responses:
+        '200':
+          description: Checklist mise à jour avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  data:
+                    type: object
+      x-authenticationMiddleware: false
+  /user/myprofile:
+    get:
+      tags:
+        - users
+      summary: Récupérer le profil de l'utilisateur connecté
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Succès de la récupération du profil de l'utilisateur
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  userName:
+                    type: string
+                  fav_POI:
+                    type: array
+                    items:
+                      type: object
+                      # Ajoutez ici le schéma des POI si disponible
+                  checklists:
+                    type: array
+                    items:
+                      type: object
+                      # Ajoutez ici le schéma des checklists si disponible
+                  meteo:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Non autorisé - JWT manquant
+        '403':
+          description: Accès interdit - Erreur de vérification du JWT
+        '404':
+          description: Utilisateur non trouvé
+        '500':
+          description: Erreur interne du serveur
+  /newsApi:
+    get:
+      tags:
+        - newsApi
+      summary: Récupérer les nouvelles
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Succès de la récupération des nouvelles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  numOfArticles:
+                    type: integer
+                  articles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        content:
+                          type: string
+                        date:
+                          type: string
+      x-authenticationMiddleware: true
+  /poi:
+    post:
+      tags:
+        - poi
+      summary: Ajouter un nouveau point d'intérêt (POI)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Poi'
+      responses:
+        '200':
+          description: Point d'intérêt ajouté avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+    get:
+      tags:
+        - poi
+      summary: Récupérer tous les points d'intérêt (POI)
+      responses:
+        '200':
+          description: Succès de la récupération des points d'intérêt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  poi:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Poi'
+  /poi/listOfPoi:
+    get:
+      tags:
+        - poi
+      summary: Récupérer les points d'intérêt par liste d'identifiants
+      parameters:
+        - in: query
+          name: poisFav
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succès de la récupération des points d'intérêt
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Poi'
+    patch:
+      tags:
+        - poi
+      summary: Ajouter ou supprimer un like sur une photo d'un POI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                photoId:
+                  type: string
+      responses:
+        '200':
+          description: Succès de l'opération de like/dislike sur la photo du POI
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /poi/poiBookMark:
+    patch:
+      tags:
+        - poi
+      summary: Marquer un POI comme favori
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                poiId:
+                  type: string
+      responses:
+        '200':
+          description: POI marqué comme favori par l'utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /poi/poiUnBookMark:
+    patch:
+      tags:
+        - poi
+      summary: Supprimer le marquage d'un POI comme favori
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                poiId:
+                  type: string
+      responses:
+        '200':
+          description: POI désépinglé par l'utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /poi/getPhotos/{poiId}:
+    get:
+      tags:
+        - poi
+      summary: Récupérer les photos d'un POI par son identifiant
+      parameters:
+        - in: path
+          name: poiId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succès de la récupération des photos du POI
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  photos:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Photo'
+  /poi/getPoi/{poiId}:
+    get:
+      tags:
+        - poi
+      summary: Récupérer un POI par son identifiant
+      parameters:
+        - in: path
+          name: poiId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succès de la récupération du POI
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Poi'
+  /poi/delete-random-elements:
+    delete:
+      tags:
+        - poi
+      summary: Supprimer des éléments POI de façon aléatoire
+      responses:
+        '200':
+          description: Éléments POI supprimés avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deletedElements:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Poi'
+  /poi/delete-private:
+    delete:
+      tags:
+        - poi
+      summary: Supprimer des POI privés
+      responses:
+        '200':
+          description: POI privés supprimés avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deletedElements:
+                    type: object
+  /cloudinary/upload-image:
+    post:
+      tags:
+        - cloudinary
+      summary: Uploader une image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                photoNewPoi:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Succès de l'upload de l'image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  response:
+                    type: object
+                  cdn_url:
+                    type: string
+        '500':
+          description: Erreur lors de l'upload de l'image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  response:
+                    type: string
+                  message:
+                    type: string
+  /meteo/{massifs}:
+    get:
+      tags:
+        - meteo
+      summary: Récupérer les informations météorologiques des massifs
+      parameters:
+        - in: path
+          name: massifs
+          description: "Massifs montagneux séparés par des virgules (ex: Vercors,Belledonne)"
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succès de la récupération des informations météorologiques
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  meteoInfo:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        massif:
+                          type: string
+                        meteoData:
+                          type: object
+        '500':
+          description: Erreur lors de la récupération des informations météorologiques
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+components:
+  schemas:
+    Poi:
+      type: object
+      properties: object
+        // Propriétés du POI
+    Photo:
+      type: object
+      properties:
+        // Propriétés de la photo
+    Result:
+      type: object
+      properties:
+        result:
+          type: boolean
+        message:
+          type: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
